@@ -28,8 +28,6 @@ class PacBackup:
     self.handle = config.init_with_config_and_options(options)
     self.backup_file_path = sanitize_path(options.backup_config)
     self.container = os.path.abspath(os.path.join(self.backup_file_path, os.pardir))
-    print(self.backup_file_path)
-    print(self.container)
     self.verbosity = options.verbose
 
   def retrieve_pkg_lists(self):
