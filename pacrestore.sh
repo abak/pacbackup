@@ -16,16 +16,24 @@ function _run(){
   fi
 }
 
+function initialize_aur(){
+  curl aur.sh > aur.sh
+  sudo chmod +x aur.sh
+}
+
 function install_from_repo(){
   _run sudo pacman -S ${1}
 }
 
 function install_from_aur(){
-  echo ${1}
-  # _run bash <(curl aur.sh) -si ${1}
+  _run ./aur.sh -si ${1}
 }
 
-function parse_file(){
+function cleanup(){
+  _run rm aur.sh
+}
+
+function restore_pkg_from_file(){
   local isAUR=false
   while read -r line
   do
@@ -34,6 +42,7 @@ function parse_file(){
         echo -e "\nRestoring Packages from ${line:1:${#line}-2}"
         if [[ $line == "[AUR]" ]]; then
           isAUR=true
+          initialize_aur
         else
           isAUR=false
         fi
@@ -69,5 +78,6 @@ if $dry_run;then
   echo ${dry_run}
 fi
 
+restore_pkg_from_file $backup_file
 
-parse_file $backup_file
+cleanup
