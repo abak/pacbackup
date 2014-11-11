@@ -9,9 +9,11 @@ import os
 
 # import pygit2
 
-__version__ = '0.0.2'
+from version import __version__
+
 """
-This module provides facility to backup the current state of the package isntalled via pacman on the current system.
+This module is a part of PacBackup. It backs up the package list along with a scipt 
+allowing easy recovery.
 """
 
 
