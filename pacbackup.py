@@ -107,19 +107,21 @@ class PacBackup:
     index.read()
     index.add(local_path)
     index.write()
+    tree = index.write_tree()
 
     today = datetime.date.today().strftime("%B %d, %Y")
     message = today + " - Automated Package List Backup"
     comitter = pygit2.Signature('PacBackup '+__version__, '')
-    head = repo.head
-    parent_commit = head.get_object()
-    parents = [parent_commit.hex]
-    tree_prefix = parent_commit.tree.hex
-    sha = repo.create_commit('refs/heads/master', comitter, comitter, message, tree_prefix, parents)
+
+    parents = [repo.head.get_object().hex]
+
+    sha = repo.create_commit('refs/heads/master',
+     comitter, comitter, message, 
+     tree,
+     parents)
 
 
 def main():
-  print(os.path.dirname(os.path.realpath(__file__)))
   parser = config.make_parser(description='Backs-up the list of pacman-installed packages on the system.', 
     prog = 'pacbackup')
 
@@ -128,13 +130,12 @@ def main():
     help = "specifies the backup file location, default : ~/.pacbackup/pkglist")
 
   backup = PacBackup(parser.parse_args())
-  backup.prepare_backup_folder()
   print("Retriving current package list")
   backup.retrieve_pkg_lists()
   print("Backing package list up")
   backup.backup_pkg_lists()
-  # print("Committing the backup to the local git tree")
-  # backup.add_to_git()
+  print("Committing the backup to the local git tree")
+  backup.add_to_git()
 
 
 if __name__ == '__main__':
