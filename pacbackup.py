@@ -67,13 +67,11 @@ class PacBackup:
 
     repo = pygit2.Repository(self.container)
     index = repo.index
-    for ref in repo.listall_references():
-      print(ref)
+
     index.read()
     index.add_all()
     index.write()
     tree = index.write_tree()
-    print(tree)
 
     message = "Initial Commit - Automated Package List Backup"
     comitter = pygit2.Signature('PacBackup '+__version__, '')
