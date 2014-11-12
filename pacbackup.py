@@ -5,9 +5,10 @@ import argparse
 import pyalpm
 from pycman import config
 
-import os
+import os, shutil
+import datetime
 
-# import pygit2
+import pygit2
 
 from version import __version__
 
@@ -58,8 +59,29 @@ class PacBackup:
           print("\t" + pkg_info_str(v))
 
   def prepare_backup_folder(self):
+    print("Preparing backup folder")
     os.mkdir(self.container)
-    # pygit2.init_repository(self.container, False)
+    pygit2.init_repository(self.container, False)
+    shutil.copy2(os.path.join(os.path.dirname(os.path.realpath(__file__)),
+      "pacrestore.sh"), self.container)
+
+    repo = pygit2.Repository(self.container)
+    index = repo.index
+    print("coucou")
+    for ref in repo.listall_references():
+      print(ref)
+    index.read()
+    index.add_all()
+    index.write()
+    tree = index.write_tree()
+    print(tree)
+
+    message = "Initial Commit - Automated Package List Backup"
+    comitter = pygit2.Signature('PacBackup '+__version__, '')
+    sha = repo.create_commit('HEAD', 
+      comitter, comitter, message, 
+      tree, 
+      [])
 
 
   def backup_pkg_lists(self):
@@ -80,9 +102,27 @@ class PacBackup:
           backup.write(pkg_info_str(pkg) + "\n")
         backup.write("\n")
 
+  def add_to_git(self):
+    local_path = os.path.relpath(self.backup_file_path, self.container)
+    repo = pygit2.Repository(self.container)
+
+    index = repo.index
+    index.read()
+    index.add(local_path)
+    index.write()
+
+    today = datetime.date.today().strftime("%B %d, %Y")
+    message = today + " - Automated Package List Backup"
+    comitter = pygit2.Signature('PacBackup '+__version__, '')
+    head = repo.head
+    parent_commit = head.get_object()
+    parents = [parent_commit.hex]
+    tree_prefix = parent_commit.tree.hex
+    sha = repo.create_commit('refs/heads/master', comitter, comitter, message, tree_prefix, parents)
+
 
 def main():
-
+  print(os.path.dirname(os.path.realpath(__file__)))
   parser = config.make_parser(description='Backs-up the list of pacman-installed packages on the system.', 
     prog = 'pacbackup')
 
@@ -91,8 +131,13 @@ def main():
     help = "specifies the backup file location, default : ~/.pacbackup/pkglist")
 
   backup = PacBackup(parser.parse_args())
+  backup.prepare_backup_folder()
+  print("Retriving current package list")
   backup.retrieve_pkg_lists()
+  print("Backing package list up")
   backup.backup_pkg_lists()
+  # print("Committing the backup to the local git tree")
+  # backup.add_to_git()
 
 
 if __name__ == '__main__':
