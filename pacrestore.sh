@@ -17,8 +17,9 @@ function _run(){
 }
 
 function initialize_aur(){
-  curl aur.sh > aur.sh
-  sudo chmod +x aur.sh
+  _run curl aur.sh > aur.sh
+  _run sudo chmod +x aur.sh
+  _run aur.sh -si package-query yaourt
 }
 
 function install_from_repo(){
@@ -26,12 +27,21 @@ function install_from_repo(){
 }
 
 function install_from_aur(){
-  _run ./aur.sh -si ${1}
+  _run yaourt -S ${1}
 }
 
 function cleanup(){
+  if ! $keep_yaourt; then
+    _run sudo pacman -R yaourt
+  fi
+  if ! $keep_query_package; then
+    _run sudo pacman -R query-package
+  fi
   _run rm aur.sh
 }
+
+keep_yaourt=false
+keep_query_package=false
 
 function restore_pkg_from_file(){
   local isAUR=false
@@ -47,7 +57,14 @@ function restore_pkg_from_file(){
           isAUR=false
         fi
       else
-        if [ "$isAUR" == true ]; then
+        if $isAUR; then
+          if [[ $line == *yaourt* ]]; then
+            keep_yaourt=true
+            keep_query_package=true
+          fi
+          if [[ $line == *query-package* ]]; then
+            keep_query_package=true
+          fi
           install_from_aur $line
         else
           install_from_repo $line
@@ -55,6 +72,9 @@ function restore_pkg_from_file(){
       fi
     fi
   done < "$1"
+
+  echo "keep_yaourt = ${keep_yaourt}"
+  echo "keep_query_package = ${keep_query_package}"
 }
 
 backup_file="./pkglist"
@@ -75,7 +95,6 @@ done
 
 if $dry_run;then
   echo "Running in Dry-Run Mode"
-  echo ${dry_run}
 fi
 
 restore_pkg_from_file $backup_file
