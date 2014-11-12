@@ -67,7 +67,6 @@ class PacBackup:
 
     repo = pygit2.Repository(self.container)
     index = repo.index
-    print("coucou")
     for ref in repo.listall_references():
       print(ref)
     index.read()
