@@ -1,0 +1,9 @@
+[Unit]
+Description=Runsc PacBackup weekly and on boot
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=1w
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,6 @@
+[Unit]
+Description=Backs-up the list of packages installed by pacman
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python /usr/bin/pacbackup.py
