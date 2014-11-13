@@ -102,23 +102,28 @@ class PacBackup:
   def add_to_git(self):
     local_path = os.path.relpath(self.backup_file_path, self.container)
     repo = pygit2.Repository(self.container)
+    st = repo.status()
 
-    index = repo.index
-    index.read()
-    index.add(local_path)
-    index.write()
-    tree = index.write_tree()
+    if st:
+      index = repo.index
+      index.read()
+      index.add(local_path)
 
-    today = datetime.date.today().strftime("%B %d, %Y")
-    message = today + " - Automated Package List Backup"
-    comitter = pygit2.Signature('PacBackup '+__version__, '')
+      index.write()
+      tree = index.write_tree()
 
-    parents = [repo.head.get_object().hex]
+      today = datetime.date.today().strftime("%B %d, %Y")
+      message = today + " - Automated Package List Backup"
+      comitter = pygit2.Signature('PacBackup '+__version__, '')
 
-    sha = repo.create_commit('refs/heads/master',
-     comitter, comitter, message, 
-     tree,
-     parents)
+      parents = [repo.head.get_object().hex]
+
+      sha = repo.create_commit('refs/heads/master',
+       comitter, comitter, message, 
+       tree,
+       parents)
+    else:
+      print("No local changes to commit")
 
 
 def main():
