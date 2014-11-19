@@ -59,11 +59,21 @@ class PacBackup:
           print("\t" + pkg_info_str(v))
 
   def prepare_backup_folder(self):
-    print("Preparing backup folder")
+    print("Preparing backup folder : ", self.container)
     os.mkdir(self.container)
     pygit2.init_repository(self.container, False)
-    shutil.copy2(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-      "pacrestore.sh"), self.container)
+
+    # look for the restore script in the default install dir first
+    try:
+      shutil.copy2("/usr/share/pacbackup/pacrestore.sh", self.container)
+    except FileNotFoundError:
+      try:
+        shutil.copy2(os.path.join(os.path.dirname(os.path.realpath(__file__)),
+          "pacrestore.sh"), self.container)
+      except FileNotFoundError:
+        print("Couldn't find the restore script anywhere, try reinstalling", file=stderr)
+        shutil.rmtree(self.container)
+        exit()
 
     repo = pygit2.Repository(self.container)
     index = repo.index
