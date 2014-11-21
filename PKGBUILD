@@ -15,8 +15,8 @@ replaces=()
 backup=()
 options=(!emptydirs)
 install=
-source=("https://github.com/abak/pacbackup/archive/$pkgver.tar.gz")
-md5sums=('8c759be019ec3d827e552ad5c606cf18')
+source=("https://github.com/abak/pacbackup/releases/download/1.0.3/pacbackup-1.0.3.tar.gz")
+md5sums=('c4ff097fca6d3f0e1135d839a04e5877')
 
 package() {
   cd "$srcdir/$pkgname-$pkgver"
