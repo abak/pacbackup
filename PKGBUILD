@@ -2,9 +2,9 @@
 pkgname=pacbackup
 pkgver=1.0.3
 pkgrel=1.0
-pkgdesc=""
+pkgdesc="Backs up the list of all explicitly installed packaged and provides restoration script"
 arch=('any')
-url="www.abak.io"
+url="http://www.abak.io"
 license=('BSD')
 groups=()
 depends=('python>=3.4' 'git>=2.1.0' 'pyalpm>=0.6.2')
