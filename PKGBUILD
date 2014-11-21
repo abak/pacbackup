@@ -4,7 +4,7 @@ pkgver=1.0.3
 pkgrel=1.0
 pkgdesc=""
 arch=('any')
-url=""
+url="www.abak.io"
 license=('BSD')
 groups=()
 depends=('python>=3.4' 'git>=2.1.0' 'pyalpm>=0.6.2')
