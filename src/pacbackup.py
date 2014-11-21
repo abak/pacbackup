@@ -10,7 +10,7 @@ import datetime
 
 import pygit2
 
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 
 """
 This module is a part of PacBackup. It backs up the package list along with a scipt 
