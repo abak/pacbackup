@@ -34,6 +34,6 @@ package() {
     cd "$srcdir/$_pkgname"
 
     python3 setup.py install --root=${pkgdir} --optimize=1
-    install -D -m644 LICENSE "${pkgdir}/usr/share/licenses/$_pkgname"
+    install -D -m644 LICENSE.md "${pkgdir}/usr/share/licenses/$_pkgname"
 
 }
