@@ -1,7 +1,7 @@
 # Maintainer: Adrien Bak <adrien.bak+aur@gmail.com>
 pkgname=pacbackup-git
 _pkgname=pacbackup
-pkgver=1.0.3.r6.g7695e6f
+pkgver=1.0.3
 pkgrel=1
 pkgdesc="Backs up the list of all explicitly installed packaged and provides restoration script"
 arch=('any')
