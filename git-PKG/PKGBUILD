@@ -15,7 +15,7 @@ replaces=()
 backup=()
 options=(!emptydirs)
 install=
-source=('git://github.com/xguse/pacbackup.git')
+source=('git://github.com/abak/pacbackup.git')
 md5sums=('SKIP')
 
 pkgver() {
