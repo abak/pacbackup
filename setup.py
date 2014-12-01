@@ -10,5 +10,5 @@ setup(
   author_email="adrien.bak@gmail.com",
   scripts=['src/pacbackup.py'],
   data_files=[('share/pacbackup', ['src/pacrestore.sh']),
-              ('/etc/systemd/user', ['pacbackup.service', 'pacbackup.timer'])]
+              ('/etc/systemd/user', ['systemd_files/pacbackup.service', 'systemd_files/pacbackup.timer'])]
   )
