@@ -124,7 +124,7 @@ class PacBackup:
 
       today = datetime.date.today().strftime("%B %d, %Y")
       message = today + " - Automated Package List Backup"
-      comitter = pygit2.Signature('PacBackup '+__version__, '')
+      comitter = pygit2.Signature('PacBackup '+__version__, 'pacbackup@dummy.org')
 
       parents = [repo.head.get_object().hex]
 
